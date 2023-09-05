@@ -129,8 +129,6 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
             <Button
               variant={"contained"}
               onClick={() => {
-                
-            console.log(variables)
                 dispatch(exampleActions.changeData(variables));
                 setEdit(false);
                 
