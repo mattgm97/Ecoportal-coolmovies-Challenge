@@ -13,13 +13,12 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button
+  Button,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Grid from "@mui/material/Unstable_Grid2";
 import EditIcon from "./EditIcon";
-import { exampleActions, useAppDispatch} from "../redux";
-
+import { exampleActions, useAppDispatch } from "../redux";
 
 interface Props {
   data: Record<string, any>;
@@ -35,10 +34,14 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
   const handleChangeRating = (event: SelectChangeEvent) => {
     setRating(event.target.value as string);
   };
-  const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeTitle = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setTitle(event.target.value as string);
   };
-  const handleChangeBody = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeBody = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setBody(event.target.value as string);
   };
 
@@ -65,7 +68,7 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
       justifyContent="center"
       alignItems="center"
     >
-      <Card sx={{ width: "90%"}}>
+      <Card sx={{ width: "90%" }}>
         <CardMedia
           sx={{ height: 740 }}
           image={data.node.movieByMovieId.imgUrl}
@@ -124,19 +127,14 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
               onChange={handleChangeBody}
             />
             <Button
-             
               variant={"contained"}
-              onClick={() =>{
-                dispatch(
-                  exampleActions.changeData(variables)
-                );
-                setEdit(false)
-                dispatch(
-                  exampleActions.fetch()
-                );
+              onClick={() => {
+                dispatch(exampleActions.changeData(variables));
+                setEdit(false);
+                
               }}
             >
-              Save 
+              Save
             </Button>
           </div>
         </Zoom>
@@ -157,11 +155,11 @@ const styles = {
     padding: "10px",
   }),
   editFields: css({
-       display: "flex",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flexWrap: "wrap",
-    margin: "2em 0;"
+    margin: "2em 0;",
   }),
 };
 
