@@ -8,18 +8,34 @@ import {
   Box,
   Modal,
 } from "@mui/material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { lightGreen } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import type { NextPage } from "next";
 import { exampleActions, useAppDispatch, useAppSelector } from "../redux";
 import MovieReviewList from "../components/MovieReviewList";
 import { useEffect, useState } from "react";
 import AddReviewForm from "../components/AddReviewForm";
 
+
 const primary = "#156B39";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#156B39',
+    },
+    secondary: lightGreen,
+  },
+});
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
   const [modalOpen, setModalOpen] = useState(false);
+  const themeHook = useTheme();
+  const matches = useMediaQuery(themeHook.breakpoints.up('md'));
 
   const handleModal = () => {
     setModalOpen((prev) => !prev);
@@ -32,7 +48,8 @@ const Home: NextPage = () => {
   },[dispatch])
 
   return (
-    <div css={styles.root}>
+    <ThemeProvider theme={theme}>
+  <div css={styles.root}>
       <Paper elevation={3} css={styles.navBar}>
         <Typography>{"EcoPortal"}</Typography>
       </Paper>
@@ -81,7 +98,7 @@ const Home: NextPage = () => {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: 500,
+                width: !matches? "90%": 500,
                 bgcolor: "background.paper",
                 boxShadow: 24,
                 p: 4,
@@ -104,6 +121,8 @@ const Home: NextPage = () => {
         <MovieReviewList />
       </div>
     </div>
+  </ThemeProvider>
+    
   );
 };
 

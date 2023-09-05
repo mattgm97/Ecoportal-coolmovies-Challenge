@@ -21,7 +21,6 @@ const AddReviewForm: FC<Props> = ({ modalClose }) => {
   const currentUser = useAppSelector((state) => state.example.currentUser);
   const dispatch = useAppDispatch();
 
-  console.log(currentUser)
 
   const [rating, setRating] = useState("");
   const [title, setTitle] = useState("");
