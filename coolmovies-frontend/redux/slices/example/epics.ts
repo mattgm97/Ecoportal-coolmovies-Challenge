@@ -5,6 +5,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 import { RootState } from '../../store';
 import { EpicDependencies } from '../../types';
 import { actions, SliceAction } from './slice';
+import { reviewsQuery } from '../../../GraphQL/queries'
 
 export const exampleEpic: Epic = (
   action$: Observable<SliceAction['increment']>,
@@ -26,7 +27,7 @@ export const exampleAsyncEpic: Epic = (
     switchMap(async () => {
       try {
         const result = await client.query({
-          query: exampleQuery,
+          query: reviewsQuery,
         });
         return actions.loaded({ data: result.data });
       } catch (err) {
@@ -35,23 +36,4 @@ export const exampleAsyncEpic: Epic = (
     })
   );
 
-const exampleQuery = gql`
-  query AllMovies {
-    allMovies {
-      nodes {
-        id
-        imgUrl
-        movieDirectorId
-        userCreatorId
-        title
-        releaseDate
-        nodeId
-        userByUserCreatorId {
-          id
-          name
-          nodeId
-        }
-      }
-    }
-  }
-`;
+
