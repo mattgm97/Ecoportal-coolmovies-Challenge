@@ -1,21 +1,11 @@
-import React, { FC, useEffect } from "react";
+import React, { FC} from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import {useAppDispatch, useAppSelector } from "../redux";
+import {useAppSelector } from "../redux";
 import MovieReviewCard from "./MovieReviewCard";
 
 
 const MovieReviewList: FC = () => {
-    
-  const dispatch = useAppDispatch();
   const movieReviews = useAppSelector((state) => state.example.fetchData);
-
-  useEffect(() => {
-   
-    if(movieReviews){
-        console.log(movieReviews?.allMovieReviews?.edges)
-    }
-  }, [movieReviews]);
-
   const result = movieReviews?.allMovieReviews?.edges ?? [];
   
   return (
