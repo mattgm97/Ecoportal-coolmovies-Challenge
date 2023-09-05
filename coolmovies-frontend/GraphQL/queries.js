@@ -1,25 +1,20 @@
-import {gql} from "@apollo/client";
+import { gql } from "@apollo/client";
 
-export const exampleQuery = gql`
-query AllMovies {
+export const getMoviesQuery = gql`
+query  {
   allMovies {
-    nodes {
-      id
-      imgUrl
-      movieDirectorId
-      userCreatorId
-      title
-      releaseDate
-      nodeId
-      userByUserCreatorId {
+    edges {
+      node {
         id
-        name
-        nodeId
+        imgUrl
+        title
       }
     }
   }
 }
 `;
+
+
 
 export const reviewsQuery = gql`
 query {
@@ -46,6 +41,16 @@ query {
   }
 `;
 
+export const currentUserQuery = gql`
+query {
+  currentUser {
+    id
+    name
+  }
+  }
+`;
+
+
 
 export const reviewsUpdateMutation = gql`
 mutation MyMutation($input: UpdateMovieReviewByIdInput!) {
@@ -55,3 +60,11 @@ mutation MyMutation($input: UpdateMovieReviewByIdInput!) {
   }
 `;
 
+
+export const reviewsAddMutation = gql`
+mutation CreateMovieReview($input: CreateMovieReviewInput!) {
+  createMovieReview(input: $input) {
+    clientMutationId
+  }
+}
+`;

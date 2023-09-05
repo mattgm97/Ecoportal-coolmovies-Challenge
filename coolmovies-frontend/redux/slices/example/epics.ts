@@ -5,7 +5,7 @@ import { filter, map, switchMap, catchError } from "rxjs/operators";
 import { RootState } from "../../store";
 import { EpicDependencies } from "../../types";
 import { actions, SliceAction } from "./slice";
-import { reviewsQuery, reviewsUpdateMutation } from "../../../GraphQL/queries";
+import { getMoviesQuery, reviewsQuery, currentUserQuery, reviewsUpdateMutation, reviewsAddMutation } from "../../../GraphQL/queries";
 
 export const exampleEpic: Epic = (
   action$: Observable<SliceAction["increment"]>,
@@ -37,6 +37,48 @@ export const exampleAsyncEpic: Epic = (
     })
   );
 
+
+
+  export const queryCurrentUserEpic: Epic = (
+    action$: Observable<SliceAction["fetchCurrentUser"]>,
+    state$: StateObservable<RootState>,
+    { client }: EpicDependencies
+  ) =>
+    action$.pipe(
+      filter(actions.fetchCurrentUser.match),
+      switchMap(async () => {
+        try {
+          const result = await client.query({
+            query: currentUserQuery
+          });
+          return actions.loadedUser({ data: result.data.currentUser });
+        } catch (err) {
+          return actions.loadError();
+        }
+      })
+    );
+
+
+  export const queryMoviesEpic: Epic = (
+    action$: Observable<SliceAction["fetchMovies"]>,
+    state$: StateObservable<RootState>,
+    { client }: EpicDependencies
+  ) =>
+    action$.pipe(
+      filter(actions.fetchMovies.match),
+      switchMap(async () => {
+        try {
+          const result = await client.query({
+            query: getMoviesQuery,
+            fetchPolicy: "network-only",
+          });
+          return actions.loadedMovies({ data: result.data });
+        } catch (err) {
+          return actions.loadError();
+        }
+      })
+    );
+
 export const listUpdateMutationEpic: Epic = (
   action$: Observable<SliceAction["changeData"]>,
   state$: StateObservable<RootState>,
@@ -58,3 +100,26 @@ export const listUpdateMutationEpic: Epic = (
       return of(actions.loadError());
     })
   );
+
+
+  export const reviewAddMutationEpic: Epic = (
+    action$: Observable<SliceAction["addReviewData"]>,
+    state$: StateObservable<RootState>,
+    { client }: EpicDependencies
+  ) =>
+    action$.pipe(
+      filter(actions.addReviewData.match),
+      switchMap((action) =>
+        client.mutate({
+          mutation: reviewsAddMutation,
+          variables: action.payload,
+        })
+      ),
+      switchMap((result) => {
+        return of(actions.fetch());
+      }),
+      catchError((error) => {
+        // Handle errors from the mutation and dispatch an error action
+        return of(actions.loadError());
+      })
+    );

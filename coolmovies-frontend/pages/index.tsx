@@ -2,24 +2,35 @@ import { css } from "@emotion/react";
 import {
   Button,
   Paper,
-  TextField,
-  Tooltip,
   Typography,
-  Zoom,
-  Card,
-  CardMedia,
-  CardContent,
+  Backdrop,
+  Fade,
+  Box,
+  Modal,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
 import type { NextPage } from "next";
 import { exampleActions, useAppDispatch, useAppSelector } from "../redux";
 import MovieReviewList from "../components/MovieReviewList";
+import { useEffect, useState } from "react";
+import AddReviewForm from "../components/AddReviewForm";
 
-const primary = "#1976d2";
+const primary = "#156B39";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModal = () => {
+    setModalOpen((prev) => !prev);
+    
+  };
+
+  useEffect(()=>{
+    dispatch( exampleActions.fetchMovies());
+    dispatch( exampleActions.fetchCurrentUser())
+  },[dispatch])
+
   return (
     <div css={styles.root}>
       <Paper elevation={3} css={styles.navBar}>
@@ -27,9 +38,6 @@ const Home: NextPage = () => {
       </Paper>
 
       <div css={styles.body}>
-        
-      
-
         <Typography variant={"h1"} css={styles.heading}>
           {"EcoPortal Coolmovies Test"}
         </Typography>
@@ -47,18 +55,53 @@ const Home: NextPage = () => {
           >
             Fetch movie reviews
           </Button>
+
+          <Button variant={"outlined"} onClick={handleModal}>
+            Add movie review
+          </Button>
         </div>
 
-        <MovieReviewList/>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={modalOpen}
+          onClose={handleModal}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={modalOpen}>
+            <Box
+              sx={{
+                position: "absolute" as "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 500,
+                bgcolor: "background.paper",
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <Typography
+                id="transition-modal-title"
+                variant="h4"
+                component="h2"
+              >
+                Add your movie review
+              </Typography>
 
-        <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
-        <TextField
-            css={styles.dataInput}
-            multiline
-            label={'Some Data'}
-            defaultValue={JSON.stringify(exampleState.fetchData)}
-          />
-        </Zoom>
+
+              <AddReviewForm  modalClose={handleModal}/>
+            </Box>
+          </Fade>
+        </Modal>
+
+        <MovieReviewList />
       </div>
     </div>
   );
