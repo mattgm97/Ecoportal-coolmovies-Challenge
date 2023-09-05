@@ -16,10 +16,12 @@ export const slice = createSlice({
   name: 'example',
   reducers: {
     fetch: () => {},
+    changeData: (state, action) => {},
     clearData: (state) => {
       state.fetchData = undefined;
     },
     loaded: (state, action: PayloadAction<{ data: unknown[] }>) => {
+      
       state.fetchData = action.payload.data;
     },
     loadError: (state) => {

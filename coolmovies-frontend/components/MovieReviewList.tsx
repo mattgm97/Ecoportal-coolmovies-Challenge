@@ -7,16 +7,16 @@ import MovieReviewCard from "./MovieReviewCard";
 const MovieReviewList: FC = () => {
     
   const dispatch = useAppDispatch();
-  const movieReviews = useAppSelector((state) => state.example);
+  const movieReviews = useAppSelector((state) => state.example.fetchData);
 
   useEffect(() => {
    
-    if(movieReviews.fetchData){
-        console.log(movieReviews.fetchData.allMovieReviews.edges)
+    if(movieReviews){
+        console.log(movieReviews?.allMovieReviews?.edges)
     }
   }, [movieReviews]);
 
-  const result = movieReviews?.fetchData?.allMovieReviews.edges ?? [];
+  const result = movieReviews?.allMovieReviews?.edges ?? [];
   
   return (
     <>

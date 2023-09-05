@@ -46,3 +46,12 @@ query {
   }
 `;
 
+
+export const reviewsUpdateMutation = gql`
+mutation MyMutation($input: UpdateMovieReviewByIdInput!) {
+    updateMovieReviewById(input: $input) {
+      clientMutationId
+    }
+  }
+`;
+

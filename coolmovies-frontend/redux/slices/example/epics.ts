@@ -1,11 +1,11 @@
-import { gql } from '@apollo/client';
-import { Epic, StateObservable } from 'redux-observable';
-import { Observable } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { from, gql, useMutation } from '@apollo/client';
+import { Epic, StateObservable, ofType } from 'redux-observable';
+import { Observable, of  } from 'rxjs';
+import { filter, map, switchMap, catchError } from 'rxjs/operators';
 import { RootState } from '../../store';
 import { EpicDependencies } from '../../types';
 import { actions, SliceAction } from './slice';
-import { reviewsQuery } from '../../../GraphQL/queries'
+import { reviewsQuery, reviewsUpdateMutation } from '../../../GraphQL/queries'
 
 export const exampleEpic: Epic = (
   action$: Observable<SliceAction['increment']>,
@@ -28,6 +28,7 @@ export const exampleAsyncEpic: Epic = (
       try {
         const result = await client.query({
           query: reviewsQuery,
+          fetchPolicy: 'network-only'
         });
         return actions.loaded({ data: result.data });
       } catch (err) {
@@ -36,4 +37,28 @@ export const exampleAsyncEpic: Epic = (
     })
   );
 
+ 
 
+
+    export const listUpdateMutationEpic: Epic = (
+      action$: Observable<SliceAction['changeData']>,
+      state$: StateObservable<RootState>,
+      { client }: EpicDependencies
+    ) =>
+      action$.pipe(
+        filter(actions.changeData.match),
+        switchMap((action) =>
+          client.mutate({
+            mutation: reviewsUpdateMutation,
+            variables: action.payload,
+          })
+        ),
+        switchMap( (result) => {
+          
+          return of(actions.fetch())
+        }),
+        catchError((error) => {
+          // Handle errors from the mutation and dispatch an error action
+          return of(actions.loadError());
+        })
+      );

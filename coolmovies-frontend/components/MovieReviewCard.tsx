@@ -18,22 +18,43 @@ import {
 import { SelectChangeEvent } from "@mui/material/Select";
 import Grid from "@mui/material/Unstable_Grid2";
 import EditIcon from "./EditIcon";
-import { exampleActions, useAppDispatch, useAppSelector } from "../redux";
+import { exampleActions, useAppDispatch} from "../redux";
+
 
 interface Props {
   data: Record<string, any>;
 }
 
 const MovieReviewCard: FC<Props> = ({ data }) => {
+  const dispatch = useAppDispatch();
   const [edit, setEdit] = useState(false);
-  const [age, setAge] = useState("1");
+  const [rating, setRating] = useState(`${data.node.rating}`);
+  const [title, setTitle] = useState(data.node.title);
+  const [body, setBody] = useState(data.node.body);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+  const handleChangeRating = (event: SelectChangeEvent) => {
+    setRating(event.target.value as string);
+  };
+  const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTitle(event.target.value as string);
+  };
+  const handleChangeBody = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setBody(event.target.value as string);
   };
 
   const editHandler = () => {
     setEdit((prev) => !prev);
+  };
+
+  const variables = {
+    input: {
+      movieReviewPatch: {
+        body: body,
+        rating: rating,
+        title: title,
+      },
+      id: data.node.id,
+    },
   };
 
   return (
@@ -44,7 +65,7 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
       justifyContent="center"
       alignItems="center"
     >
-      <Card sx={{ maxWidth: 500 }}>
+      <Card sx={{ width: "90%"}}>
         <CardMedia
           sx={{ height: 740 }}
           image={data.node.movieByMovieId.imgUrl}
@@ -68,13 +89,14 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
         </CardContent>
 
         <Zoom in={edit} unmountOnExit mountOnEnter>
-          <div>
+          <div css={styles.editFields}>
             <TextField
               css={styles.dataInput}
               multiline
               fullWidth
               label={"Edit the review title"}
               defaultValue={data.node.title}
+              onChange={handleChangeTitle}
             />
 
             <FormControl fullWidth css={styles.dataInput}>
@@ -82,9 +104,9 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
               <Select
                 labelId="rating-label"
                 id="rating"
-                value={age}
+                value={rating}
                 label="Rating"
-                onChange={handleChange}
+                onChange={handleChangeRating}
               >
                 <MenuItem value={1}>1 Star</MenuItem>
                 <MenuItem value={2}>2 Stars</MenuItem>
@@ -99,16 +121,20 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
               fullWidth
               label={"Edit the review body"}
               defaultValue={data.node.body}
+              onChange={handleChangeBody}
             />
             <Button
-              variant={"outlined"}
-              onClick={() =>
+             
+              variant={"contained"}
+              onClick={() =>{
                 dispatch(
-                  exampleState.fetchData
-                    ? exampleActions.clearData()
-                    : exampleActions.fetch()
-                )
-              }
+                  exampleActions.changeData(variables)
+                );
+                setEdit(false)
+                dispatch(
+                  exampleActions.fetch()
+                );
+              }}
             >
               Save 
             </Button>
@@ -129,6 +155,13 @@ const styles = {
     alignSelf: "stretch",
     margin: "15px 0",
     padding: "10px",
+  }),
+  editFields: css({
+       display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    margin: "2em 0;"
   }),
 };
 
