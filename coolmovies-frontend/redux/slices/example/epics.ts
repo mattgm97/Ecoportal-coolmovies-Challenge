@@ -7,15 +7,6 @@ import { EpicDependencies } from "../../types";
 import { actions, SliceAction } from "./slice";
 import { getMoviesQuery, reviewsQuery, currentUserQuery, reviewsUpdateMutation, reviewsAddMutation } from "../../../GraphQL/queries";
 
-export const exampleEpic: Epic = (
-  action$: Observable<SliceAction["increment"]>,
-  state$: StateObservable<RootState>
-) =>
-  action$.pipe(
-    filter(actions.increment.match),
-    filter(() => Boolean(state$.value.example.value % 2)),
-    map(() => actions.epicSideEffect())
-  );
 
 export const exampleAsyncEpic: Epic = (
   action$: Observable<SliceAction["fetch"]>,
