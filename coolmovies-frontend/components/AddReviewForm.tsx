@@ -115,6 +115,7 @@ const AddReviewForm: FC<Props> = ({ modalClose }) => {
         <Button
           variant={"contained"}
           onClick={() => {
+
             dispatch(exampleActions.addReviewData(variables));
             modalClose();
           }}

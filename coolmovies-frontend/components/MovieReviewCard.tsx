@@ -53,7 +53,7 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
     input: {
       movieReviewPatch: {
         body: body,
-        rating: rating,
+        rating: parseInt(rating),
         title: title,
       },
       id: data.node.id,
@@ -129,6 +129,8 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
             <Button
               variant={"contained"}
               onClick={() => {
+                
+            console.log(variables)
                 dispatch(exampleActions.changeData(variables));
                 setEdit(false);
                 

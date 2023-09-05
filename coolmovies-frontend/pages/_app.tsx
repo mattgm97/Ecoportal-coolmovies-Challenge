@@ -6,13 +6,14 @@ import Head from 'next/head';
 import { createStore } from '../redux';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL;
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
   const [store, setStore] = useState<EnhancedStore | null>(null);
   React.useEffect(() => {
     const client = new ApolloClient({
       cache: new InMemoryCache(),
-      uri: '/graphql',
+      uri: graphqlUrl,
     });
 
     const store = createStore({ epicDependencies: { client } });
