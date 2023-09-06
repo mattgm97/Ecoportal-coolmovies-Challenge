@@ -79,6 +79,8 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
             <Typography gutterBottom variant="h5" component="div">
               {data.node.title} - {data.node.rating}/5
             </Typography>
+            
+         
             <CardActions>
               <IconButton aria-label="edit" onClick={editHandler}>
                 <EditIcon />
@@ -86,6 +88,9 @@ const MovieReviewCard: FC<Props> = ({ data }) => {
             </CardActions>
           </div>
 
+          <Typography sx={{marginBottom:"1em"}}variant="h6" color="text.secondary">
+          {data.node.userByUserReviewerId.name}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
             {data.node.body}
           </Typography>
